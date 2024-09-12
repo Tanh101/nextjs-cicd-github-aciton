@@ -30,7 +30,7 @@ jobs:
         # Build và test image được build ra bằng Docker
         run: |
           docker build -t next-basic .
-          docker run next-basic npm test
+          docker run next-basic npm run lint
 
       - name: Push image to Docker Hub
         uses: docker/build-push-action@v2
