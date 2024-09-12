@@ -39,29 +39,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/reactjs-basic:${{ github.sha }}
 
-  # Job 2: Deploy
-  # deploy:
-  #   needs: build_and_test
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Deploy to server
-  #       # Sử dụng action "appleboy/ssh-action" để triển khai image lên server thông qua SSH
-  #       uses: appleboy/ssh-action@v0.1.3
-  #       with:
-  #         host: ${{ secrets.SERVER_HOST }}
-  #         username: ${{ secrets.SERVER_USER }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         script: |
-  #           # Pull image mà được push lên DockerHub bên trên
-  #           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
-
-  #           # Dừng và gỡ bỏ container hiện tại (nếu có)
-  #           docker stop next-container
-  #           docker rm next-container 
-
-  #           # Chạy container mới với image đã pull về bên trên
-  #           docker run -d -p 80:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
   deploy:
       needs: build_and_test
       runs-on: ubuntu-latest
@@ -71,7 +48,7 @@ jobs:
           uses: appleboy/ssh-action@v0.1.3
           with:
             host: ${{ secrets.SERVER_HOST }}
-            username: ${{ secrets.SERVER_USER }}
+            username: ${{ secrets.SSH_USER}}
             key: ${{ secrets.SSH_PRIVATE_KEY }}
             script: |
               docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
