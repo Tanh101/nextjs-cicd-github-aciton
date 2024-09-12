@@ -52,10 +52,9 @@ jobs:
               SSH_USER: ${{secrets.SSH_USER}}
         
           run: |
-            echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-            ssh -o StrictHostKeyChecking=no -i private_key ${SSH_USER}@${SERVER_HOST} '
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
-            docker stop next-container
-            docker rm next-container
-            docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
-            
+            echo "$PRIVATE_KEY" > github-action.pem && chmod 600 github-action.pem
+            ssh -o StrictHostKeyChecking=no -i github-action.pem ${SSH_USER}@${SERVER_HOST}
+              docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
+              docker stop next-container
+              docker rm next-container
+              docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
