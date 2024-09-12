@@ -31,14 +31,13 @@ jobs:
         run: |
           docker build -t next-basic .
           docker run next-basic npm run lint
-
-      - name: Push image to Docker Hub
-        uses: docker/build-push-action@v2
-        # Sử dụng action "docker/build-push-action" để đẩy image lên Docker Hub
+          
+      - name: build and push docker image to registry
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/reactjs-basic:${{ github.sha }}
 
   # Job 2: Deploy
   deploy:
