@@ -44,6 +44,11 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
+        - name: Create PEM file from GitHub secret
+          run: |
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > github-action.pem
+            chmod 400 github-action.pem
+
         - name: Deploy to server
           uses: appleboy/ssh-action@v0.1.3
           with:
