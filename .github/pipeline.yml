@@ -2,10 +2,9 @@ name: Docker CI/CD Pipeline
 
 # Xác định sự kiện trigger cho pipeline, trong trường hợp này là push lên nhánh develop
 on:
-  pull_request:
-    types: [opened, reopened]
+  push:
     branches:
-      - "feature/**"
+      - "develop"
 
 # Định nghĩa các jobs cần thực hiện
 jobs:
