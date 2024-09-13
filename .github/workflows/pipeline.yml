@@ -54,7 +54,7 @@ jobs:
           run: |
               echo "$PRIVATE_KEY" > private_key
               chmod 600 private_key
-              ssh -v -o StrictHostKeyChecking=no -i private_key ${SSH_USER}@${SERVER_HOST} '
+              ssh -v -o StrictHostKeyChecking=no -i private_key ${SSH_USER}@${SERVER_HOST}
                 cd /home/ubuntu &&
                 docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
                 docker stop next-container
