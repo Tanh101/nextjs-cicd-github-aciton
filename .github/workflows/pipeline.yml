@@ -44,21 +44,19 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
+        - uses: actions/checkout@v2 
         - name: Build & Deploy
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.SERVER_HOST }}
-            username: ${{ secrets.SSH_USER }}
-            key: ${{ secrets.SSH_PRIVATE_KEY }}
-            script: cd /var/www/
-          # env:
-          #     PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          #     SERVER_HOST: ${{secrets.SERVER_HOST}}
-          #     SSH_USER: ${{secrets.SSH_USER}}
-          # run: |
-          #   echo "$PRIVATE_KEY" > github-action.pem && chmod 600 github-action.pem
-          #   ssh -o StrictHostKeyChecking=no -i github-action.pem ${SSH_USER}@${SERVER_HOST}
-          #     docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
-          #     docker stop next-container
-          #     docker rm next-container
-          #     docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
+          env:
+              PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              SERVER_HOST: ${{secrets.SERVER_HOST}}
+              SSH_USER: ${{secrets.SSH_USER}}
+        
+          run: |
+              echo "$PRIVATE_KEY" > private_key
+              chmod 600 private_key
+              ssh -v -o StrictHostKeyChecking=no -i private_key ${SSH_USER}@${SERVER_HOST} '
+                cd /home/ubuntu &&
+                docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
+                docker stop next-container
+                docker rm next-container
+                docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
