@@ -66,6 +66,4 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-github-action:${{ github.sha }}
             docker stop next-container
             docker rm next-container
-            docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
-
-           
+            docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-github-action:${{ github.sha }}
