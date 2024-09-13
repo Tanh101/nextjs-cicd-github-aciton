@@ -1,7 +1,9 @@
 
 const page = () => {
   return (
-    <div>Hello world1 </div>
+    <div className="flex items-center text-center text-3xl font-bold">
+      <p>Hacking Nasa ...</p>
+    </div>
   )
 }
 
