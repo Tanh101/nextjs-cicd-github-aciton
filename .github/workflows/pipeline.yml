@@ -39,24 +39,23 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/reactjs-basic:${{ github.sha }}
 
-  deploy:
-      needs: build_and_test
-      runs-on: ubuntu-latest
+  Deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2 
+      - name: Build & Deploy
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            HOSTNAME: ${{secrets.SSH_HOST}}
+            USER_NAME: ${{secrets.USER_NAME}}
+      
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
 
-      steps:
-        - uses: actions/checkout@v2 
-        - name: Build & Deploy
-          env:
-              PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-              SERVER_HOST: ${{secrets.SERVER_HOST}}
-              SSH_USER: ${{secrets.SSH_USER}}
-        
-          run: |
-              echo "$PRIVATE_KEY" > private_key
-              chmod 600 private_key
-              ssh -v -o StrictHostKeyChecking=no -i private_key ${SSH_USER}@${SERVER_HOST}
-                cd /home/ubuntu &&
-                docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
-                docker stop next-container
-                docker rm next-container
-                docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
+              # Now we have got the access of EC2 and we will start the deploy .
+              cd /home/ubuntu/
+              '
+
