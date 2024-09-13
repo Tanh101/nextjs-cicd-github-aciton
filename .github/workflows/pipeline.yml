@@ -1,0 +1,37 @@
+name: Docker CI/CD Pipeline
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - develop
+      - staging
+      - production
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and test
+        run: |
+          docker build -t next-github-action .
+        
+      - name: Test with lint
+        run: |
+          docker run next-github-action npm run lint
+
+      - name: build and push docker image to registry
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/next-github-action:${{ github.sha }}
