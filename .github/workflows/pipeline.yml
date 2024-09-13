@@ -40,7 +40,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/next-github-action:${{ github.sha }}
 
   deploy:
-    name: Deploy to EC2 on master branch push
+    needs: build_and_test
     runs-on: ubuntu-latest
 
     steps:
@@ -63,4 +63,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             sudo apt-get -y update
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/next-github-action:${{ github.sha }}
+            docker stop next-container
+            docker rm next-container
+            docker run -d -p 3000:3000 --name next-container ${{ secrets.DOCKERHUB_USERNAME }}/next-basic:${{ github.sha }}
+
            
